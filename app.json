@@ -1,0 +1,33 @@
+{
+  "expo": {
+    "name": "sneakr",
+    "slug": "sneakr",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/splash-image-1.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/images/splash-image-1.png",
+      "resizeMode": "cover",
+      "backgroundColor": "#011B5E"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#FFFFFF"
+      }
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    }
+  }
+}
