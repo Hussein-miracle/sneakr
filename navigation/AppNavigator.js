@@ -21,11 +21,11 @@ const SneakrNavigator = () => {
     <NavigationContainer>
       <StatusBar style="light" backgroundColor={Colors.blackPrimary} />
       <SneakrStack.Navigator>
-        <SneakrStack.Screen
+        {/* <SneakrStack.Screen
           name="Home"
           component={HomeScreen}
           options={HomeScreenOptions}
-        />
+        /> */}
         <SneakrStack.Screen
           name="Products"
           component={ProductsScreen}
