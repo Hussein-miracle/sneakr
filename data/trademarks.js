@@ -16,4 +16,15 @@ const trademarks = [
   },
 ];
 
-export default trademarks;
+
+const mappedTrademarks = trademarks.map((item,index) => {
+  if(index === 0){
+    item.elevate = 9;
+  }else{
+    item.elevate = 1;
+  }
+  return item;
+})
+
+
+export default mappedTrademarks;

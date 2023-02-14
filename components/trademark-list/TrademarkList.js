@@ -3,28 +3,40 @@ import { FlatList, Image, StyleSheet, View ,TouchableOpacity} from "react-native
 import Colors from "../../constants/Colors";
 import trademarks from "../../data/trademarks";
 
-const TrademarkItem = ({ item }) => {
-  const [clicked, setClicked] = useState(false);
-  const { imageUrl } = item;
-  const handleClicked = () => {
-    setClicked(!clicked);
-  }
+
+
+
+const TrademarkItem = ({ item , onClick}) => {
+  const { imageUrl ,elevate , id} = item;
+
   return (
-    <TouchableOpacity style={{...styles.trademarkItem,elevation: clicked ? 9 : 1,}} onPress={handleClicked}>
+    <TouchableOpacity style={{...styles.trademarkItem,elevation: elevate}} onPress={() =>  onClick(id)}>
       <Image source={imageUrl} />
     </TouchableOpacity>
   );
 };
 
 const TrademarkList = () => {
+  const [trademarksList,setTrademarksLists] = useState(trademarks);
+  const handleClicked = (id) => {
+    const newTrademarks =  trademarks.map((item) => {
+      if(item.id === id){
+        item.elevate = 9;
+      }else{
+        item.elevate = 1;
+      }
+      return item;
+    })
+    setTrademarksLists(newTrademarks);
+  }
   return (
     <FlatList
       horizontal
       style={{ height: 60 }}
-      data={trademarks}
+      data={trademarksList}
       keyExtractor={(item) => item.id}
       renderItem={({ item }) => {
-        return <TrademarkItem item={item} />;
+        return <TrademarkItem item={item} onClick={handleClicked} />;
       }}
     />
   );
@@ -32,9 +44,9 @@ const TrademarkList = () => {
 
 const styles = StyleSheet.create({
   trademarkItem: {
-    width: 70,
+    width: 65,
     height: 40,
-    borderRadius: 6,
+    borderRadius: 13,
     backgroundColor: Colors.white,
     marginHorizontal: 10,
     marginVertical: 12,
