@@ -1,0 +1,2 @@
+      // "image": "./assets/images/splash-image-1.png",
+      // "resizeMode": "cover",
