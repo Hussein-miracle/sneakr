@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState ,useLayoutEffect} from "react";
 import {
   Text,
   View,
@@ -26,32 +26,35 @@ import { Ionicons } from "@expo/vector-icons";
 import Colors from "../../constants/Colors";
 import STYLES from "./AnimationStyles";
 
-const HomeScreen = ({ navigation }) => {
+const SwipeScreen = ({ navigation }) => {
   const [completedSwipe, setCompletedSwipe] = useState(false);
 
   const X = useSharedValue(0);
 
   const handleNextScreen = (completed) => {
     if (completedSwipe !== completed) {
-      setCompletedSwipe(true);
+      // console.log(completed,'completed');
+      setCompletedSwipe(completed);
       navigation.navigate("Products");
       X.value = 0;
     }
   };
   const animationGestureHandler = useAnimatedGestureHandler({
     onStart: (e, ctx) => {
+      
       ctx.completed = completedSwipe;
-      // setCompletedSwipe(false)
-      // if (X.value > STYLES.HORIZONTAL_SWIPE_RANGE / 2) {
-      //   X.value = 0;
-      // }
+      runOnJS(setCompletedSwipe)(false)
+      if (X.value < STYLES.HORIZONTAL_SWIPE_RANGE / 2) {
+        X.value = 0;
+      }
     },
     onActive: (e, ctx) => {
+      // console.log(ctx,'context');
       // console.log(e, "gestrue event active");
       // if (e.translationX > 0) {
       // }
       let newValue = 0;
-      if (ctx.completedSwipe) {
+      if (ctx.completed) {
         newValue = e.translationX + STYLES.HORIZONTAL_SWIPE_RANGE;
       } else {
         newValue = e.translationX;
@@ -102,6 +105,23 @@ const HomeScreen = ({ navigation }) => {
     }),
   };
 
+
+  // useLayoutEffect(() => {
+  //   navigation.setOptions({ tabBarVisible: false })
+  // },[])
+
+  useEffect(() => {
+    navigation.getParent()?.setOptions({
+      tabBarStyle: {
+        display: "none"
+      }
+    });
+    return () => navigation.getParent()?.setOptions({
+      tabBarStyle: undefined
+    });
+  }, [navigation]);
+
+  
   return (
     <View style={styles.screen}>
       <GestureHandlerRootView style={{ ...styles.image, ...styles.screen }}>
@@ -134,13 +154,19 @@ const HomeScreen = ({ navigation }) => {
   );
 };
 
-export const HomeScreenOptions = () => {
+export const SwipeScreenOptions = ({}) => {
   return {
     headerTitle: "  ",
     headerShown: false,
     headerStyle: {
       backgroundColor: Colors.secondary,
     },
+    tabBarVisible:false,
+    tabBarStyle:{
+      display:'none'
+    },
+    tabBarLabelShown: false,
+
   };
 };
 
@@ -200,4 +226,4 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 });
-export default HomeScreen;
+export default SwipeScreen;

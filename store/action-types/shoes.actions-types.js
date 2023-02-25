@@ -1,0 +1,1 @@
+export const ADD_SHOES_TO_LIKE = 'ADD_SHOES_TO_LIKE';

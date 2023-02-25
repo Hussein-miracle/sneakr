@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import {
   StyleSheet,
   Text,
@@ -9,11 +10,14 @@ import {
   FlatList,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { addShoeToLikes } from "../../store/actions/shoes.actions";
+
 import Colors from "../../constants/Colors";
 
-const ProductItem = ({ item }) => {
+const ProductItem = ({ item , navigation}) => {
+  const dispatch = useDispatch();
   const [liked, setLiked] = useState(false);
-  const { title, imageUrl, price, rating } = item;
+  const { title, imageUrl, price, rating} = item;
   const ratingsArr = Array.from({ length: 5 }, () => {
     return {};
   });
@@ -28,11 +32,16 @@ const ProductItem = ({ item }) => {
   });
 
   const handleLiked = () => {
+    dispatch(addShoeToLikes(item));
     setLiked(!liked);
-    console.log('Pressed!');
+    // console.log('Pressed!');
   };
+
+  const handlePressed = () => {
+    navigation.navigate('Checkout');
+  }
   return (
-    <View style={styles.productItem}>
+    <TouchableOpacity style={styles.productItem} onPress={handlePressed}>
       <TouchableOpacity style={styles.likeBtnWrapper} onPress={handleLiked}>
         <Ionicons
           name={liked ? "heart" : "heart-outline"}
@@ -52,7 +61,7 @@ const ProductItem = ({ item }) => {
       }} horizontal data={ratingsMap} keyExtractor={(item) => item.id}  renderItem={({item}) => {
         return <Ionicons name={ item.filled ? 'star' : 'star-outline' } size={20} color={Colors.tertiary} />
       }}/>
-    </View>
+    </TouchableOpacity>
   );
 };
 
@@ -70,7 +79,9 @@ const styles = StyleSheet.create({
   },
   likeBtnWrapper: {
     justifyContent: "center",
-    alignItems: "flex-end",
+    alignItems: "center",
+    width:'15%',
+    alignSelf:'flex-end',
     // backgroundColor: "green",
   },
   price: {

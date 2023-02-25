@@ -1,38 +1,49 @@
 import React, { useState } from "react";
-import { FlatList, Image, StyleSheet, View ,TouchableOpacity} from "react-native";
+import {
+  FlatList,
+  Image,
+  StyleSheet,
+  View,
+  TouchableOpacity,
+} from "react-native";
 import Colors from "../../constants/Colors";
 import trademarks from "../../data/trademarks";
 
-
-
-
-const TrademarkItem = ({ item , onClick}) => {
-  const { imageUrl ,elevate , id} = item;
-
+const TrademarkItem = ({ item, onClick }) => {
+  const { imageUrl, elevate, id, typeId } = item;
+  const handleClick = () => {
+    onClick(id, typeId);
+  };
   return (
-    <TouchableOpacity style={{...styles.trademarkItem,elevation: elevate}} onPress={() =>  onClick(id)}>
+    <TouchableOpacity
+      style={{ ...styles.trademarkItem, elevation: elevate }}
+      onPress={handleClick}
+    >
       <Image source={imageUrl} />
     </TouchableOpacity>
   );
 };
 
-const TrademarkList = () => {
-  const [trademarksList,setTrademarksLists] = useState(trademarks);
-  const handleClicked = (id) => {
-    const newTrademarks =  trademarks.map((item) => {
-      if(item.id === id){
-        item.elevate = 9;
-      }else{
-        item.elevate = 1;
+const TrademarkList = ({ handlePress }) => {
+  const [trademarksList, setTrademarksLists] = useState(trademarks);
+
+  const handleClicked = (id, typeId) => {
+    // console.log(typeId,'tID');
+    handlePress(typeId);
+    const newTrademarks = trademarks.map((item) => {
+      if (item.id === id) {
+        item.elevate = 12;
+      } else {
+        item.elevate = 2;
       }
       return item;
-    })
+    });
     setTrademarksLists(newTrademarks);
-  }
+  };
   return (
     <FlatList
       horizontal
-      style={{ height: 60 }}
+      style={{ height: 70,width:'100%' }}
       data={trademarksList}
       keyExtractor={(item) => item.id}
       renderItem={({ item }) => {
@@ -44,15 +55,14 @@ const TrademarkList = () => {
 
 const styles = StyleSheet.create({
   trademarkItem: {
-    width: 65,
-    height: 40,
+    width: 110,
+    height: 50,
     borderRadius: 13,
     backgroundColor: Colors.white,
-    marginHorizontal: 10,
-    marginVertical: 12,
+    margin: 10,
     justifyContent: "center",
     alignItems: "center",
-    elevation: 1,
+    elevation: 2,
   },
   trademarkImg: {
     width: "100%",

@@ -1,31 +1,51 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useSelector } from "react-redux";
 import {
   Text,
   View,
   StyleSheet,
   Image,
-  Dimensions,
   TouchableOpacity,
   TextInput,
   FlatList,
 } from "react-native";
 import { Ionicons, Feather } from "@expo/vector-icons";
-// import { HeaderButtons, Item } from "react-navigation-header-buttons";
-// import CustomHeaderButton from "../../components/custom-header-button/CustomHeaderButton";
-import sneakers from "../../data/sneakers";
-import Colors from "../../constants/Colors";
 import ProductItem from "../../components/product-item/ProductItem";
 import ListHeader from "../../components/list-header/ListHeader";
 import TrademarkList from "../../components/trademark-list/TrademarkList";
+import Colors from "../../constants/Colors";
 
 const ProductsScreen = ({ navigation }) => {
   const [search, setSearch] = useState("");
+
+  const products = useSelector((state) => state.sneakers.shoes);
+  const searched = products.filter((sneaks) =>
+    sneaks.title.toLowerCase().includes(search.toLowerCase())
+  );
+
   const handleSearch = (text) => {
+    // setProducts(searched);
     setSearch(text);
   };
   const handleBack = () => {
     navigation.goBack();
   };
+
+  const handlePressTrademark = (typeId) => {
+    const filteredShoes = products.filter(
+      (sneaker) => sneaker.typeId === typeId
+    );
+    // console.log(filteredShoes,'filtered')
+    // setProducts(filteredShoes);
+  };
+
+  const handleSettingsPressed = () => {
+    navigation.navigate('Settings');
+  }
+  const handleProfilePressed = () => {
+    navigation.navigate('Profile');
+  }
+
   return (
     <View style={styles.screen}>
       <View style={styles.customHeader}>
@@ -38,7 +58,7 @@ const ProductsScreen = ({ navigation }) => {
           />
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.headerImageWrapper}>
+        <TouchableOpacity style={styles.headerImageWrapper} onPress={handleProfilePressed}>
           <Image
             style={styles.headerImage}
             source={require("../../assets/images/headerImage.png")}
@@ -62,28 +82,41 @@ const ProductsScreen = ({ navigation }) => {
           />
         </View>
 
-        <TouchableOpacity style={styles.headerSettingsBtn} activeOpacity={0.75}>
+        <TouchableOpacity style={styles.headerSettingsBtn} activeOpacity={0.75} onPress={handleSettingsPressed}>
           <Feather name="settings" size={24} color={Colors.blackPrimary} />
         </TouchableOpacity>
       </View>
 
-      <TrademarkList />
+      <TrademarkList handlePress={handlePressTrademark} />
 
-      <FlatList style={{paddingHorizontal:2,width:'100%',marginTop:2}} numColumns={2} data={sneakers} keyExtractor={(s) => s.typeId} renderItem={({item}) => {
-
-        return <ProductItem item={item} />
-      }} ListHeaderComponent={() => {
-        return <ListHeader text={'Converse products'}/>
-      }}  />
-
+      {searched.length > 0 ? (
+        <FlatList
+          style={{ paddingHorizontal: 2, width: "100%", marginTop: 20 ,height: '70%',paddingVertical:4}}
+          numColumns={2}
+          data={searched}
+          keyExtractor={(s) => s.id}
+          renderItem={({ item }) => {
+            return <ProductItem item={item} navigation={navigation} />;
+          }}
+          ListHeaderComponent={() => {
+            return <ListHeader text={"Converse products"} />;
+          }}
+        />
+      ) : (
+        <View>
+          <Text>No Shoes of this type</Text>
+        </View>
+      )}
     </View>
   );
 };
 
 export const ProductsScreenOptions = () => {
   return {
+    showTabLabel:false,
+    showTabBarLabel:false,
     // headerTitle: "Products",
-    headerShown: false,
+    // headerShown: false,
     // headerBackVisible: false,
     // headerLeft: () => {
     //   return (
@@ -92,6 +125,8 @@ export const ProductsScreenOptions = () => {
     //     </HeaderButtons>
     //   )
     // }
+    // tabBarActiveTintColor: 'lightblue',
+    // tabBarInactiveTintColor: 'red',
   };
 };
 
@@ -159,8 +194,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 6,
   },
-  tradeMarkWrapper:{
-
-  }
+  tradeMarkWrapper: {},
 });
 export default ProductsScreen;
