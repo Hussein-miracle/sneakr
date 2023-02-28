@@ -1,23 +1,23 @@
 import Sneaker from "../model/sneaker";
 
-const sneakers = [
+const detailedSneakers = [
   new Sneaker(
     "6b32069d-7e6e-48b1-a28c-2e6c1eb4d740",
     "Chuck Taylor All Star High Top",
     "converse",
     80,
-    require("../assets/images/new-sneaks/chuck-taylor-all-star-high-top-charcoal.png"),
+    require("../assets/images/new-sneaks/chuck-taylor-all-star-high-top-charcoal.jpg"),
     [
       {
-        url: require("../assets/images/new-sneaks/chuck-taylor-all-star-high-top-charcoal.png"),
+        url: require("../assets/images/new-sneaks/chuck-taylor-all-star-high-top-charcoal.jpg"),
         color: "#5e4d43",
       },
       {
-        url: require("../assets/images/new-sneaks/chuck-taylor-all-star-high-top-black-monochrome.png"),
+        url: require("../assets/images/new-sneaks/chuck-taylor-all-star-high-top-black-monochrome.jpg"),
         color: "#1e1e1e",
       },
       {
-        url: require("../assets/images/new-sneaks/chuck-taylor-all-star-high-top-black.png"),
+        url: require("../assets/images/new-sneaks/chuck-taylor-all-star-high-top-black.jpg"),
         color: "#151517",
       },
       {
@@ -131,7 +131,6 @@ const sneakers = [
         color: "#211f1f",
       },
     ],
-    4,
     "LEGENDARY STYLE, REFINED.",
     "The radiance lives on in the Nike Air Force 1 ’07, the b-ball OG that puts a fresh spin on what you know best: crisp leather, clean colorways and the perfect amount of flash to make you shine. This clean, pure white finish adds the gum sole contrast for a fresh, versatile look with just the right amount of pop.",
     [
@@ -256,4 +255,4 @@ const sneakers = [
   ),
 ];
 
-export default sneakers;
+export default detailedSneakers;

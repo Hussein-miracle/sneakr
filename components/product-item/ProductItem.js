@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback,useMemo } from "react";
 import { useDispatch } from "react-redux";
 import {
   StyleSheet,
@@ -14,10 +14,10 @@ import { addShoeToLikes } from "../../store/actions/shoes.actions";
 
 import Colors from "../../constants/Colors";
 
-const ProductItem = ({ item , navigation}) => {
+const ProductItem = ({ item, navigation }) => {
   const dispatch = useDispatch();
   const [liked, setLiked] = useState(false);
-  const { title, imageUrl, price, rating} = item;
+  const { title, imageUrl, price, rating, id } = item;
   const ratingsArr = Array.from({ length: 5 }, () => {
     return {};
   });
@@ -37,11 +37,21 @@ const ProductItem = ({ item , navigation}) => {
     // console.log('Pressed!');
   };
 
-  const handlePressed = () => {
-    navigation.navigate('Checkout');
+  // const paramsObject = useMemo(() => {
+  //   const sneakerId = item.id;
+  //   return {
+  //     sneakerId
+  //   }
+  // },[item])
+
+  const onPressed = () => {
+    navigation.navigate('Checkout',{
+      sneakerId:id
+    });
   }
+
   return (
-    <TouchableOpacity style={styles.productItem} onPress={handlePressed}>
+    <TouchableOpacity style={styles.productItem} onPress={onPressed}>
       <TouchableOpacity style={styles.likeBtnWrapper} onPress={handleLiked}>
         <Ionicons
           name={liked ? "heart" : "heart-outline"}
@@ -54,13 +64,26 @@ const ProductItem = ({ item , navigation}) => {
         <Image source={imageUrl} style={styles.image} />
       </View>
       <Text style={styles.title}>{title}</Text>
-      <Text style={styles.price}>{price}</Text>
-      <FlatList style={{
-        position:'relative',
-        bottom:0,left:0
-      }} horizontal data={ratingsMap} keyExtractor={(item) => item.id}  renderItem={({item}) => {
-        return <Ionicons name={ item.filled ? 'star' : 'star-outline' } size={20} color={Colors.tertiary} />
-      }}/>
+      <Text style={styles.price}>${price}</Text>
+      <FlatList
+        style={{
+          position: "relative",
+          bottom: 0,
+          left: 0,
+        }}
+        horizontal
+        data={ratingsMap}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => {
+          return (
+            <Ionicons
+              name={item.filled ? "star" : "star-outline"}
+              size={20}
+              color={Colors.tertiary}
+            />
+          );
+        }}
+      />
     </TouchableOpacity>
   );
 };
@@ -75,19 +98,19 @@ const styles = StyleSheet.create({
     padding: 14,
     margin: 7,
     position: "relative",
-    justifyContent:'space-between'
+    justifyContent: "space-between",
   },
   likeBtnWrapper: {
     justifyContent: "center",
     alignItems: "center",
-    width:'15%',
-    alignSelf:'flex-end',
+    width: "15%",
+    alignSelf: "flex-end",
     // backgroundColor: "green",
   },
   price: {
     color: Colors.secondary,
-    fontWeight:'400',
-    fontSize:16,
+    fontWeight: "400",
+    fontSize: 16,
   },
   ratings: {
     flexDirection: "row",
@@ -98,7 +121,7 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontWeight: "500",
     // marginVertical:6,
-    lineHeight:25,
+    lineHeight: 25,
   },
   imageWrapper: {
     width: "100%",

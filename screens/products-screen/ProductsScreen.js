@@ -15,16 +15,19 @@ import ListHeader from "../../components/list-header/ListHeader";
 import TrademarkList from "../../components/trademark-list/TrademarkList";
 import Colors from "../../constants/Colors";
 
-const ProductsScreen = ({ navigation }) => {
+const ProductsScreen = ({ navigation, route }) => {
   const [search, setSearch] = useState("");
+  const sneaks = useSelector((state) => state.sneakers.shoes);
+  const [listTitle, setListTitle] = useState(`Converse Products`);
+  const [products, setProducts] = useState(
+    sneaks.filter((sneakrs) => sneakrs.typeId === "converse")
+  );
 
-  const products = useSelector((state) => state.sneakers.shoes);
-  const searched = products.filter((sneaks) =>
-    sneaks.title.toLowerCase().includes(search.toLowerCase())
+  const searched = products.filter((sneakr) =>
+    sneakr.title.toLowerCase().includes(search.toLowerCase())
   );
 
   const handleSearch = (text) => {
-    // setProducts(searched);
     setSearch(text);
   };
   const handleBack = () => {
@@ -32,19 +35,18 @@ const ProductsScreen = ({ navigation }) => {
   };
 
   const handlePressTrademark = (typeId) => {
-    const filteredShoes = products.filter(
-      (sneaker) => sneaker.typeId === typeId
-    );
-    // console.log(filteredShoes,'filtered')
-    // setProducts(filteredShoes);
+    const filteredShoes = sneaks.filter((sneaker) => sneaker.typeId === typeId);
+    const title = typeId[0].toUpperCase() + typeId.slice(1);
+    setListTitle(`${title} Products`);
+    setProducts(filteredShoes);
   };
 
   const handleSettingsPressed = () => {
-    navigation.navigate('Settings');
-  }
+    navigation.navigate("Settings");
+  };
   const handleProfilePressed = () => {
-    navigation.navigate('Profile');
-  }
+    navigation.navigate("Profile");
+  };
 
   return (
     <View style={styles.screen}>
@@ -58,7 +60,10 @@ const ProductsScreen = ({ navigation }) => {
           />
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.headerImageWrapper} onPress={handleProfilePressed}>
+        <TouchableOpacity
+          style={styles.headerImageWrapper}
+          onPress={handleProfilePressed}
+        >
           <Image
             style={styles.headerImage}
             source={require("../../assets/images/headerImage.png")}
@@ -82,7 +87,11 @@ const ProductsScreen = ({ navigation }) => {
           />
         </View>
 
-        <TouchableOpacity style={styles.headerSettingsBtn} activeOpacity={0.75} onPress={handleSettingsPressed}>
+        <TouchableOpacity
+          style={styles.headerSettingsBtn}
+          activeOpacity={0.75}
+          onPress={handleSettingsPressed}
+        >
           <Feather name="settings" size={24} color={Colors.blackPrimary} />
         </TouchableOpacity>
       </View>
@@ -91,7 +100,13 @@ const ProductsScreen = ({ navigation }) => {
 
       {searched.length > 0 ? (
         <FlatList
-          style={{ paddingHorizontal: 2, width: "100%", marginTop: 20 ,height: '70%',paddingVertical:4}}
+          style={{
+            paddingHorizontal: 2,
+            width: "100%",
+            marginTop: 20,
+            height: "70%",
+            paddingVertical: 4,
+          }}
           numColumns={2}
           data={searched}
           keyExtractor={(s) => s.id}
@@ -99,12 +114,16 @@ const ProductsScreen = ({ navigation }) => {
             return <ProductItem item={item} navigation={navigation} />;
           }}
           ListHeaderComponent={() => {
-            return <ListHeader text={"Converse products"} />;
+            return <ListHeader text={listTitle} />;
           }}
         />
       ) : (
-        <View>
-          <Text>No Shoes of this type</Text>
+        <View style={{
+          margin:30,
+        }}>
+          <Text style={{
+            textAlign:'center'
+          }}>No Shoes of this type</Text>
         </View>
       )}
     </View>
@@ -113,8 +132,8 @@ const ProductsScreen = ({ navigation }) => {
 
 export const ProductsScreenOptions = () => {
   return {
-    showTabLabel:false,
-    showTabBarLabel:false,
+    showTabLabel: false,
+    showTabBarLabel: false,
     // headerTitle: "Products",
     // headerShown: false,
     // headerBackVisible: false,

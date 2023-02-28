@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState ,useLayoutEffect} from "react";
+
 import {
   Text,
   View,
@@ -7,6 +8,7 @@ import {
   ImageBackground,
   Dimensions,
 } from "react-native";
+
 import Animated, {
   Extrapolate,
   interpolate,
@@ -16,11 +18,14 @@ import Animated, {
   withSpring,
   runOnJS,
 } from "react-native-reanimated";
+
 import {
   PanGestureHandler,
   GestureHandlerRootView,
 } from "react-native-gesture-handler";
+
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+
 import { Ionicons } from "@expo/vector-icons";
 
 import Colors from "../../constants/Colors";

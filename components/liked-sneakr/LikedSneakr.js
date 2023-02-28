@@ -29,7 +29,7 @@ const LikedSneakr = ({ item, navigation }) => {
       </View>
       <View style={styles.details}>
         <Text style={styles.title}>{title}</Text>
-        <Text style={styles.price}>{price}</Text>
+        <Text style={styles.price}>$ {price}</Text>
       </View>
     </TouchableOpacity>
   );

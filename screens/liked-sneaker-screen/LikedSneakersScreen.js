@@ -1,10 +1,10 @@
 import React from "react";
-import { View, Text, StyleSheet, FlatList } from "react-native";
+import { View, Text, StyleSheet, FlatList ,ScrollView} from "react-native";
 import { useSelector } from "react-redux";
 import Colors from "../../constants/Colors";
 import LikedSneakr from "../../components/liked-sneakr/LikedSneakr";
 
-const LikedSneakersScreen = () => {
+const LikedSneakersScreen = ({navigation}) => {
   const likedSneakers = useSelector((st) => st.sneakers.shoes);
 
   return (
@@ -13,16 +13,16 @@ const LikedSneakersScreen = () => {
         <Text style={styles.headerText}>Likes</Text>
       </View>
 
-      <View>
+      <ScrollView>
         <FlatList  data={likedSneakers} keyExtractor={(item) => item.id} 
         contentContainerStyle={{
           alignItems:'center',
           justifyContent:'space-evenly',
-          paddingHorizontal:10,
+          padding:10,
         }}  numColumns={1} renderItem={({item}) => {
-          return <LikedSneakr item={item} />
+          return <LikedSneakr item={item} {...{navigation}} />
         }} />
-      </View>
+      </ScrollView>
     </View>
   );
 };
