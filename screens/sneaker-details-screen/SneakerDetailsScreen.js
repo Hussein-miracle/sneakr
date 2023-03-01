@@ -402,6 +402,7 @@ const styles = StyleSheet.create({
     width: "80%",
     height: "80%",
     elevation: 5,
+    transform:[{rotate: '18deg'}]
   },
   carousel: {
     width: WIDTH,
@@ -447,9 +448,9 @@ const styles = StyleSheet.create({
   },
   sneakerTitle: {
     fontFamily: "tenor-sans",
-    fontSize: 14,
+    fontSize: 18,
     fontStyle: "normal",
-    fontWeight: "600",
+    fontWeight: "700",
     textAlign: "center",
   },
   sneakerPrice: {

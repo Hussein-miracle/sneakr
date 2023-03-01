@@ -14,13 +14,17 @@ import ProductItem from "../../components/product-item/ProductItem";
 import ListHeader from "../../components/list-header/ListHeader";
 import TrademarkList from "../../components/trademark-list/TrademarkList";
 import Colors from "../../constants/Colors";
+import { TRADEMARK_TYPES } from "../../utils";
 
 const ProductsScreen = ({ navigation, route }) => {
   const [search, setSearch] = useState("");
+  const [placeholder, setPlaceHolder] = useState(
+    TRADEMARK_TYPES.CONVERSE.toLocaleUpperCase()
+  );
   const sneaks = useSelector((state) => state.sneakers.shoes);
   const [listTitle, setListTitle] = useState(`Converse Products`);
   const [products, setProducts] = useState(
-    sneaks.filter((sneakrs) => sneakrs.typeId === "converse")
+    sneaks.filter((sneakrs) => sneakrs.typeId === TRADEMARK_TYPES.CONVERSE)
   );
 
   const searched = products.filter((sneakr) =>
@@ -37,6 +41,7 @@ const ProductsScreen = ({ navigation, route }) => {
   const handlePressTrademark = (typeId) => {
     const filteredShoes = sneaks.filter((sneaker) => sneaker.typeId === typeId);
     const title = typeId[0].toUpperCase() + typeId.slice(1);
+    setPlaceHolder(title.toUpperCase());
     setListTitle(`${title} Products`);
     setProducts(filteredShoes);
   };
@@ -66,7 +71,9 @@ const ProductsScreen = ({ navigation, route }) => {
         >
           <Image
             style={styles.headerImage}
-            source={require("../../assets/images/headerImage.png")}
+            source={require("../../assets/images/passport.png")}
+            resizeMethod='resize'
+            resizeMode="center"
           />
         </TouchableOpacity>
       </View>
@@ -80,7 +87,7 @@ const ProductsScreen = ({ navigation, route }) => {
             style={{ marginRight: 4, flex: 0.1 }}
           />
           <TextInput
-            placeholder="Search"
+            placeholder={`Search ${placeholder} Sneakers`}
             onChangeText={handleSearch}
             value={search}
             style={{ flex: 0.99 }}
@@ -118,12 +125,18 @@ const ProductsScreen = ({ navigation, route }) => {
           }}
         />
       ) : (
-        <View style={{
-          margin:30,
-        }}>
-          <Text style={{
-            textAlign:'center'
-          }}>No Shoes of this type</Text>
+        <View
+          style={{
+            margin: 30,
+          }}
+        >
+          <Text
+            style={{
+              textAlign: "center",
+            }}
+          >
+            No Shoes of this type
+          </Text>
         </View>
       )}
     </View>
@@ -170,6 +183,8 @@ const styles = StyleSheet.create({
     borderRadius: 45,
     borderColor: Colors.blackPrimary,
     borderWidth: 2,
+    backgroundColor: "#eee",
+    elevation: 3,
   },
   headerImage: {
     width: "100%",

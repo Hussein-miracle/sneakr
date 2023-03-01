@@ -115,6 +115,9 @@ const SneakrNavigator = () => {
             component={ProfileScreen}
             options={{
               // headerShown:false,
+              headerStyle:{
+                color:Colors.secondary,
+              }
             }}
           />
           <SneakrStack.Screen

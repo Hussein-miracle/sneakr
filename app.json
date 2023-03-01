@@ -7,9 +7,9 @@
     "icon": "./assets/images/splash-image-1.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/images/splash-image-1.png",
+      "image": "./assets/images/splasher.png",
       "resizeMode": "cover",
-      "backgroundColor": "#011B5E"
+      "backgroundColor": "#000"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -22,12 +22,12 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#FFFFFF"
+        "foregroundImage":  "./assets/images/splash-image-1.png",
+        "backgroundColor": "#011B5E"
       }
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/images/splash-image-1.png",
     }
   }
 }

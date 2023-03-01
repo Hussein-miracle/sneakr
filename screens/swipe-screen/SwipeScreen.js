@@ -213,7 +213,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     zIndex: 6,
     color: Colors.white,
-    fontSize: 38,
+    fontSize: 58,
     zIndex: 10,
     fontFamily: "syne",
   },

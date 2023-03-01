@@ -1,10 +1,10 @@
 import React from "react";
-import { View, Text, StyleSheet, FlatList ,ScrollView} from "react-native";
+import { View, Text, StyleSheet, FlatList, ScrollView } from "react-native";
 import { useSelector } from "react-redux";
 import Colors from "../../constants/Colors";
 import LikedSneakr from "../../components/liked-sneakr/LikedSneakr";
 
-const LikedSneakersScreen = ({navigation}) => {
+const LikedSneakersScreen = ({ navigation }) => {
   const likedSneakers = useSelector((st) => st.sneakers.shoes);
 
   return (
@@ -12,17 +12,19 @@ const LikedSneakersScreen = ({navigation}) => {
       <View style={styles.header}>
         <Text style={styles.headerText}>Likes</Text>
       </View>
-
-      <ScrollView>
-        <FlatList  data={likedSneakers} keyExtractor={(item) => item.id} 
+      <FlatList
+        data={likedSneakers}
+        keyExtractor={(item) => item.id}
         contentContainerStyle={{
-          alignItems:'center',
-          justifyContent:'space-evenly',
-          padding:10,
-        }}  numColumns={1} renderItem={({item}) => {
-          return <LikedSneakr item={item} {...{navigation}} />
-        }} />
-      </ScrollView>
+          alignItems: "center",
+          justifyContent: "space-evenly",
+          padding: 10,
+        }}
+        numColumns={1}
+        renderItem={({ item }) => {
+          return <LikedSneakr item={item} {...{ navigation }} />;
+        }}
+      />
     </View>
   );
 };
@@ -44,14 +46,15 @@ const styles = StyleSheet.create({
     // paddingHorizontal: 2,
   },
   header: {
-    justifyContent:'center',
-    alignItems:'center',
-    height:'5%',
-    backgroundColor:Colors.secondary,
+    justifyContent: "center",
+    alignItems: "center",
+    height: "5%",
+    backgroundColor: Colors.secondary,
   },
-  headerText: { 
+  headerText: {
     color: Colors.primaryWhite,
-
+    fontSize: 18,
+    fontWeight: "700",
   },
 });
 

@@ -11,7 +11,6 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
-
 import Colors from "../../constants/Colors";
 
 const LikedSneakr = ({ item, navigation }) => {
@@ -20,8 +19,11 @@ const LikedSneakr = ({ item, navigation }) => {
 
 
   const handlePressed = () => {
-    navigation.navigate("Checkout");
+    navigation.navigate('Checkout',{
+      sneakerId:item.id
+    });
   };
+
   return (
     <TouchableOpacity style={styles.LikedSneakr} onPress={handlePressed}>
       <View style={styles.imageWrapper}>

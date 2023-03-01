@@ -11,6 +11,7 @@ import * as SplashScreen from "expo-splash-screen";
 // import CustomSplashScreen from './screens/splash-screen/SplashScreen';
 import SneakrNavigator from "./navigation/AppNavigator";
 import shoesReducer from "./store/reducers/shoes.reducer";
+import authReducer from './store/reducers/auth.reducer';
 // Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync();
 
@@ -21,7 +22,8 @@ const customFonts = {
 
 
 const rootReducer = combineReducers({
-  sneakers:shoesReducer
+  sneakers:shoesReducer,
+  auth:authReducer,
 }) 
 
 const store = createStore(rootReducer);
