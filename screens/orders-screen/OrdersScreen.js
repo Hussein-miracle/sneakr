@@ -2,8 +2,7 @@ import React from 'react'
 import { Text, View, StyleSheet } from "react-native";
 
 
-
-const SettingsScreen = () => {
+const OrdersScreen = () => {
   return (
     <View>
     <Text>SettingsScreen</Text>
@@ -11,10 +10,11 @@ const SettingsScreen = () => {
   )
 }
 
+
 const styles = StyleSheet.create({
   screen:{
     flex:1,
     paddingTop:60,
   }
 })
-export default SettingsScreen
+export default OrdersScreen

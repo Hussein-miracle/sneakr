@@ -2,14 +2,14 @@ import React from 'react'
 import { Text, View, StyleSheet } from "react-native";
 
 
-
-const SettingsScreen = () => {
+const CartScreen = () => {
   return (
     <View>
-    <Text>SettingsScreen</Text>
+    <Text>CartScreen</Text>
   </View>
   )
 }
+
 
 const styles = StyleSheet.create({
   screen:{
@@ -17,4 +17,4 @@ const styles = StyleSheet.create({
     paddingTop:60,
   }
 })
-export default SettingsScreen
+export default CartScreen

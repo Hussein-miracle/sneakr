@@ -1,5 +1,5 @@
 class Sneaker{
-  constructor(id,title,typeId,price,imageUrl,imgData,rating,short_description,detailed_description,productDetails = []){
+  constructor(id,title,typeId,price,imageUrl,imgData,rating,short_description,detailed_description,productDetails = [],liked = false){
     this.typeId = typeId;
     this.title = title;
     this.id = id;
@@ -10,6 +10,7 @@ class Sneaker{
     this.detailed_description = detailed_description;
     this.imageUrl = imageUrl;
     this.productDetails = productDetails;
+    this.liked = liked;
   }
 }
 

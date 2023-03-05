@@ -1,4 +1,4 @@
-import React, { useState, useCallback,useMemo } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import { useDispatch } from "react-redux";
 import {
   StyleSheet,
@@ -10,18 +10,21 @@ import {
   FlatList,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { addShoeToLikes } from "../../store/actions/shoes.actions";
+import * as Notifier from "expo-notifications";
+
+import {
+  addShoeToLikes,
+  addNotification,
+} from "../../store/actions/shoes.actions";
 
 import Colors from "../../constants/Colors";
 
-const ProductItem = ({ item, navigation }) => {
+const ProductItem = ({ item, navigation , count}) => {
   const dispatch = useDispatch();
-  const [liked, setLiked] = useState(false);
-  const { title, imageUrl, price, rating, id } = item;
-  const ratingsArr = Array.from({ length: 5 }, () => {
+  const { title, imageUrl, price, rating, id, liked } = item;
+  const ratingsMap = Array.from({ length: 5 }, () => {
     return {};
-  });
-  const ratingsMap = ratingsArr.map((item, index) => {
+  }).map((item, index) => {
     if (index < rating) {
       item.filled = true;
     } else {
@@ -31,9 +34,39 @@ const ProductItem = ({ item, navigation }) => {
     return item;
   });
 
-  const handleLiked = () => {
+  const triggerNotification = async () => {
+    return Notifier.scheduleNotificationAsync({
+      content: {
+        title: item.liked
+          ? `You liked  ${title} ✨.`
+          : `You unliked  ${title} 🥺.`,
+        body: item.liked
+          ? `${title} has been added to your likes,make sure to get  it before we're out of stock.`
+          : `${title} has been removed from your likes,seems you don't like it anymore.`,
+        data: { data:item  },
+      },
+      trigger: {
+        seconds: 1,
+      },
+      // identifier,
+    });
+  };
+
+  const handleLiked = async () => {
     dispatch(addShoeToLikes(item));
-    setLiked(!liked);
+    triggerNotification().then(() => {
+      const notification = {
+        title: item.liked
+          ? `You liked  ${title} ✨.`
+          : `You unliked  ${title} 🥺.`,
+        body: item.liked
+          ? `${title} has been added to your likes,make sure to get  it before we're out of stock.`
+          : `${title} has been removed from your likes,seems you don't like it anymore.`,
+        id: `${Math.random().toString()}${item.id}`,
+      };
+
+      dispatch(addNotification(notification));
+    });
     // console.log('Pressed!');
   };
 
@@ -45,10 +78,12 @@ const ProductItem = ({ item, navigation }) => {
   // },[item])
 
   const onPressed = () => {
-    navigation.navigate('Checkout',{
-      sneakerId:id
+    navigation.navigate("Checkout", {
+      sneakerId: id,
+      sneakerDetailTitle:title,
+      cartCount:count
     });
-  }
+  };
 
   return (
     <TouchableOpacity style={styles.productItem} onPress={onPressed}>

@@ -5,6 +5,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
+import { createDrawerNavigator } from "@react-navigation/drawer";
 import { Ionicons } from "@expo/vector-icons";
 
 import Colors from "../constants/Colors";
@@ -13,20 +14,22 @@ import Colors from "../constants/Colors";
 import SwipeScreen, {
   SwipeScreenOptions,
 } from "../screens/swipe-screen/SwipeScreen";
+
 import ProductsScreen, {
   ProductsScreenOptions,
 } from "../screens/products-screen/ProductsScreen";
-
 import LikedSneakersScreen, {
   LikedSneakersScreenOptions,
 } from "../screens/liked-sneaker-screen/LikedSneakersScreen";
-
 import NotificationsScreen from "../screens/notifications-screen/NotificationsScreen";
-
 import SneakerDetailsScreen,{SneakerDetailsScreenOptions} from "../screens/sneaker-details-screen/SneakerDetailsScreen";
 
 import SettingsScreen from "../screens/settings-screen/SettingsScreen";
 import ProfileScreen from "../screens/profile-screen/ProfileScreen";
+import CartScreen from "../screens/cart-screen/CartScreen";
+import OrdersScreen from "../screens/orders-screen/OrdersScreen";
+
+const DrawerNavigator = createDrawerNavigator();
 
 // stack
 const SneakrStack = createNativeStackNavigator();
@@ -60,7 +63,11 @@ const defaultTabOptions = ({route}) => {
     // tabBarOptions:{
       tabBarActiveTintColor: 'lightgreen',
       tabBarInactiveTintColor: Colors.blackPrimary,
+      activeColor: 'lightgreen',
+      inactiveColor: Colors.blackPrimary,
     // }
+    // tabBarOptions:{{ showLabel: false, } }
+    labeled:false,
   };
 };
 
@@ -68,8 +75,8 @@ const SneakrTabNavigator = () => {
   return (
     <>
       {/* <StatusBar style="light" backgroundColor={Colors.blackPrimary} /> */}
-      <SneakrTabStack.Navigator screenOptions={defaultTabOptions} tabBar={{
-        showLabel:false
+      <SneakrTabStack.Navigator screenOptions={defaultTabOptions} tabBarOptions={{
+        tabBarShowLabel:false,
       }} >
         <SneakrTabStack.Screen name="Home" component={ProductsScreen}  options={ProductsScreenOptions}/>
         <SneakrTabStack.Screen
@@ -80,7 +87,10 @@ const SneakrTabNavigator = () => {
         <SneakrTabStack.Screen
           name="Notifications"
           component={NotificationsScreen}
-          options={{}}
+          options={{
+            tabBarShowLabel:false,
+          }}
+          
         />
       </SneakrTabStack.Navigator>
     </>
@@ -118,6 +128,20 @@ const SneakrNavigator = () => {
               headerStyle:{
                 color:Colors.secondary,
               }
+            }}
+          />
+          <SneakrStack.Screen
+            name="Cart"
+            component={CartScreen}
+            options={{
+              // headerShown:false,
+            }}
+          />
+          <SneakrStack.Screen
+            name="Orders"
+            component={OrdersScreen}
+            options={{
+              // headerShown:false,
             }}
           />
           <SneakrStack.Screen

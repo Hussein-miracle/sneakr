@@ -41,9 +41,9 @@ const styles = StyleSheet.create({
   LikedSneakr: {
     elevation: 5,
     backgroundColor: Colors.primaryWhiteDark,
+    borderRadius: 8,
     width: 365,
     height: 100,
-    borderRadius: 8,
     padding: 8,
     marginVertical: 10,
     flexDirection:'row',

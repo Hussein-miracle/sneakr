@@ -24,10 +24,25 @@
       "adaptiveIcon": {
         "foregroundImage":  "./assets/images/splash-image-1.png",
         "backgroundColor": "#011B5E"
-      }
+      },
+      "useNextNotificationsApi":true
     },
     "web": {
       "favicon": "./assets/images/splash-image-1.png",
-    }
+    },
+    "plugins": [
+      [
+        "expo-notifications",
+        {
+          "icon":  "./assets/images/splash-image-1.png",
+          "color": "#ffffff",
+          "sounds": [
+            "./assets/sounds/waterdrop-drop.wav",
+            "./assets/sounds/magic-notification-ring.wav",
+            "./assets/sounds/software-interface-back.wav"
+          ]
+        }
+      ]
+    ]
   }
 }

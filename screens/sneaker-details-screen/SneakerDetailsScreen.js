@@ -12,7 +12,9 @@ import {
 } from "react-native";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import { SimpleLineIcons, EvilIcons, Ionicons } from "@expo/vector-icons";
-import { useSelector } from "react-redux";
+import { useSelector,useDispatch } from "react-redux";
+
+
 import CustomHeaderButton from "../../components/custom-header-button/CustomHeaderButton";
 import Colors from "../../constants/Colors";
 import { hex_is_light } from "../../utils";
@@ -30,16 +32,18 @@ const SneakerVariant = ({ imageUrl, extrastyle }) => {
 
 const ColorVariant = ({ color, handlePress, extrastyle, index }) => {
   return (
-    <View style={{
-      backgroundColor:Colors.primaryWhite,
-      width: 35,
-      height: 35,
-      borderRadius: 20,
-      marginRight: 8,
-      justifyContent:'center',
-      alignItems:'center',
-      ...extrastyle,
-    }}>
+    <View
+      style={{
+        backgroundColor: Colors.primaryWhite,
+        width: 35,
+        height: 35,
+        borderRadius: 20,
+        marginRight: 8,
+        justifyContent: "center",
+        alignItems: "center",
+        ...extrastyle,
+      }}
+    >
       <Pressable
         style={{
           width: 25,
@@ -58,6 +62,7 @@ const SneakerDetailsScreen = ({ route, navigation }) => {
   const sneaker = useSelector((state) =>
     state.sneakers.shoes.find((sneak) => sneak.id === sneakerId)
   );
+
   const variants = sneaker.imgData;
   const [carouselPosition, setCarouselPosition] = useState(0);
   const [defaultBg, setDefaultBg] = useState(variants[0].color);
@@ -105,11 +110,15 @@ const SneakerDetailsScreen = ({ route, navigation }) => {
     setCarouselPosition(index);
   };
 
-  useEffect(() => {
-    navigation.setParams({
-      sneakerDetailTitle: sneaker.title,
-    });
-  }, []);
+  const handleAddToCart = () => {
+
+  };
+  // useEffect(() => {
+  //   navigation.setParams({
+  //     sneakerDetailTitle: sneaker.title,
+  //     count:cartItems.length
+  //   });
+  // }, []);
 
   return (
     <ScrollView style={styles.screen}>
@@ -335,7 +344,9 @@ const SneakerDetailsScreen = ({ route, navigation }) => {
 };
 
 export const SneakerDetailsScreenOptions = ({ route, navigation }) => {
-  const { sneakerDetailTitle } = route.params;
+  //console.log(route.params , 'rppp')
+  const { sneakerDetailTitle,cartCount } = route.params;
+  console.log(cartCount,'count')
   const handleBack = () => {
     navigation.navigate("Products");
   };
@@ -364,7 +375,7 @@ export const SneakerDetailsScreenOptions = ({ route, navigation }) => {
             }}
           >
             <Text style={{ color: Colors.primaryWhite, fontSize: 12 }}>
-              {0}
+              {cartCount}
             </Text>
           </View>
         </HeaderButtons>
@@ -402,7 +413,7 @@ const styles = StyleSheet.create({
     width: "80%",
     height: "80%",
     elevation: 5,
-    transform:[{rotate: '18deg'}]
+    transform: [{ rotate: "18deg" }],
   },
   carousel: {
     width: WIDTH,

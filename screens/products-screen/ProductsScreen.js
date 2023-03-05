@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import {
   Text,
   View,
@@ -8,20 +8,71 @@ import {
   TouchableOpacity,
   TextInput,
   FlatList,
+  Alert,
 } from "react-native";
+
 import { Ionicons, Feather } from "@expo/vector-icons";
+import * as Notifier from "expo-notifications";
+
 import ProductItem from "../../components/product-item/ProductItem";
 import ListHeader from "../../components/list-header/ListHeader";
 import TrademarkList from "../../components/trademark-list/TrademarkList";
 import Colors from "../../constants/Colors";
 import { TRADEMARK_TYPES } from "../../utils";
 
+import {
+  addNotification,
+  setNotificationToken,
+} from "../../store/actions/shoes.actions";
+
+const registerForPushNotificationsAsync = async () => {
+  let token;
+
+  try {
+    if (Platform.OS === "android") {
+      await Notifier.setNotificationChannelAsync("default", {
+        name: "default",
+        importance: Notifier.AndroidImportance.MAX,
+        vibrationPattern: [0, 250, 250, 250],
+        lightColor: "#FF231F7C",
+      });
+    }
+
+    // if (Device.isDevice) {
+    const { status: existingStatus } = await Notifier.getPermissionsAsync();
+    let finalStatus = existingStatus;
+    if (existingStatus !== "granted") {
+      const { status } = await Notifier.requestPermissionsAsync();
+      finalStatus = status;
+    }
+    if (finalStatus !== "granted") {
+      Alert.alert("Failed to get push token for push notification!");
+      return;
+    }
+    const response = await Notifier.getExpoPushTokenAsync();
+    token = response.data;
+    console.log(token);
+    // } else {a
+    //   alert("Must use physical device for Push Notifications");
+    // }
+
+    return token;
+  } catch (err) {
+    console.log(err, "err getting token");
+  }
+};
+
 const ProductsScreen = ({ navigation, route }) => {
+  const dispatch = useDispatch();
   const [search, setSearch] = useState("");
+  const backgroundSubcription = useRef();
+  const foregroundSubcription = useRef();
   const [placeholder, setPlaceHolder] = useState(
     TRADEMARK_TYPES.CONVERSE.toLocaleUpperCase()
   );
   const sneaks = useSelector((state) => state.sneakers.shoes);
+  const cartItems = useSelector((s) => s.cart.cartItems);
+
   const [listTitle, setListTitle] = useState(`Converse Products`);
   const [products, setProducts] = useState(
     sneaks.filter((sneakrs) => sneakrs.typeId === TRADEMARK_TYPES.CONVERSE)
@@ -47,22 +98,62 @@ const ProductsScreen = ({ navigation, route }) => {
   };
 
   const handleSettingsPressed = () => {
-    navigation.navigate("Settings");
+    // navigation.navigate("Settings");
+    Alert.alert(
+      "Feature not available yet 🥺.",
+      "Please be patient with us feature coming soon ✨ or not 👀.",
+      [
+        {
+          text: "Okay",
+          style: "default",
+          onPress: null,
+        },
+      ]
+    );
   };
   const handleProfilePressed = () => {
     navigation.navigate("Profile");
   };
+
+  useEffect(() => {
+    const tk = registerForPushNotificationsAsync();
+    dispatch(setNotificationToken(tk));
+  }, []);
+
+  useEffect(() => {
+    backgroundSubcription.current =
+      Notifier.addNotificationResponseReceivedListener((response) => {
+        console.log(response, "bg noti response");
+      });
+
+    foregroundSubcription.current = Notifier.addNotificationReceivedListener(
+      (notification) => {
+        console.log(notification, "fg noti");
+      }
+    );
+
+    return () => {
+      backgroundSubcription.current.remove();
+      foregroundSubcription.current.remove();
+    };
+  }, []);
 
   return (
     <View style={styles.screen}>
       <View style={styles.customHeader}>
         <TouchableOpacity style={styles.headerBtnWrapper} onPress={handleBack}>
           <Ionicons
+            name="lock-open"
+            size={28}
+            color={Colors.blackPrimary}
+            style={styles.swipeIcon}
+          />
+          {/* <Ionicons
             name="menu"
             size={26}
             color={Colors.blackPrimary}
             style={styles.swipeIcon}
-          />
+          /> */}
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -72,7 +163,7 @@ const ProductsScreen = ({ navigation, route }) => {
           <Image
             style={styles.headerImage}
             source={require("../../assets/images/passport.png")}
-            resizeMethod='resize'
+            resizeMethod="resize"
             resizeMode="center"
           />
         </TouchableOpacity>
@@ -118,7 +209,7 @@ const ProductsScreen = ({ navigation, route }) => {
           data={searched}
           keyExtractor={(s) => s.id}
           renderItem={({ item }) => {
-            return <ProductItem item={item} navigation={navigation} />;
+            return <ProductItem item={item} navigation={navigation} count={cartItems.length} />;
           }}
           ListHeaderComponent={() => {
             return <ListHeader text={listTitle} />;
@@ -135,7 +226,7 @@ const ProductsScreen = ({ navigation, route }) => {
               textAlign: "center",
             }}
           >
-            No Shoes of this type
+            No Sneakers of this type
           </Text>
         </View>
       )}
