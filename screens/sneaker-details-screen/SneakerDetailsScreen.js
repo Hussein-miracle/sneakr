@@ -12,13 +12,15 @@ import {
 } from "react-native";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import { SimpleLineIcons, EvilIcons, Ionicons } from "@expo/vector-icons";
-import { useSelector,useDispatch } from "react-redux";
-
+import { useSelector, useDispatch } from "react-redux";
 
 import CustomHeaderButton from "../../components/custom-header-button/CustomHeaderButton";
+import CustomHeaderBtn from "../../components/custom-header-btn/CustomHeaderBtn";
+
+import { addToCart } from "../../store/actions/cart.actions";
+
 import Colors from "../../constants/Colors";
 import { hex_is_light } from "../../utils";
-import CustomHeaderBtn from "../../components/custom-header-btn/CustomHeaderBtn";
 
 const WIDTH = Dimensions.get("window").width;
 
@@ -58,6 +60,9 @@ const ColorVariant = ({ color, handlePress, extrastyle, index }) => {
 };
 
 const SneakerDetailsScreen = ({ route, navigation }) => {
+  const dispatch = useDispatch();
+  const cartItemsCount = useSelector((state) => state.cart.cartItemsCount);
+  console.log(cartItemsCount, "cItemsCount");
   const { sneakerId } = route.params;
   const sneaker = useSelector((state) =>
     state.sneakers.shoes.find((sneak) => sneak.id === sneakerId)
@@ -67,10 +72,9 @@ const SneakerDetailsScreen = ({ route, navigation }) => {
   const [carouselPosition, setCarouselPosition] = useState(0);
   const [defaultBg, setDefaultBg] = useState(variants[0].color);
   const totalLength = useRef(sneaker.imgData.length).current;
-  const ratingsArr = Array.from({ length: 5 }, () => {
-    return {};
-  });
-  const ratingsMap = ratingsArr.map((item, index) => {
+  const ratingsMap = Array.from({ length: 5 }, () => {
+    return { filled: false, id: null };
+  }).map((item, index) => {
     if (index < sneaker.rating) {
       item.filled = true;
     } else {
@@ -79,15 +83,11 @@ const SneakerDetailsScreen = ({ route, navigation }) => {
     item.id = index;
     return item;
   });
-  // console.log(totalLength, "tlr");
-  // console.log(defaultBg, "defaultBg");
+
   const handleNext = () => {
     if (carouselPosition < totalLength - 1) {
       const index = carouselPosition + 1;
-      // console.log(index,'index next');
       const item = variants[index];
-      // console.log(item , 'item');
-      // console.log(variants , 'vIm');
       setDefaultBg(item.color);
       setCarouselPosition(index);
     }
@@ -96,7 +96,6 @@ const SneakerDetailsScreen = ({ route, navigation }) => {
   const handlePrev = () => {
     if (carouselPosition > 0) {
       const index = carouselPosition - 1;
-      // console.log(index,'index prev');
       const item = variants[index];
       setDefaultBg(item.color);
       setCarouselPosition(index);
@@ -104,21 +103,34 @@ const SneakerDetailsScreen = ({ route, navigation }) => {
   };
 
   const handlePressColor = (index) => {
-    // console.log(index);
     const item = variants[index];
     setDefaultBg(item.color);
     setCarouselPosition(index);
   };
 
   const handleAddToCart = () => {
-
+    const cartItem = {
+      id: sneakerId,
+      title: sneaker.title,
+      price: sneaker.price,
+      imageUrl: variants[carouselPosition].url,
+      color: variants[carouselPosition].color,
+    };
+    dispatch(addToCart(cartItem));
   };
-  // useEffect(() => {
-  //   navigation.setParams({
-  //     sneakerDetailTitle: sneaker.title,
-  //     count:cartItems.length
-  //   });
-  // }, []);
+  const handleBuyNow = () => {
+    const orderItem = {
+      id: sneakerId,
+      title: sneaker.title,
+      price: sneaker.price,
+    };
+  };
+
+  useEffect(() => {
+    navigation.setParams({
+      cartCount:cartItemsCount,
+    });
+  }, [cartItemsCount]);
 
   return (
     <ScrollView style={styles.screen}>
@@ -179,36 +191,16 @@ const SneakerDetailsScreen = ({ route, navigation }) => {
         <Text style={styles.sneakerTitle}>{sneaker.title}</Text>
         <Text style={styles.sneakerPrice}>${sneaker.price}</Text>
       </View>
-      <View
-        style={{
-          paddingHorizontal: 6,
-          paddingVertical: 4,
-        }}
-      >
-        <Text
-          style={{
-            fontSize: 18,
-            fontWeight: "700",
-          }}
-        >
-          Colour
-        </Text>
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "flex-start",
-            // justifyContent:'space-between',
-          }}
-        >
+      <View style={styles.colorWrapper}>
+        <Text style={styles.colorWrapperText}>Colour</Text>
+        <View style={styles.colorVariantWrapper}>
           {
             // <FlatList  />
             variants.map((colorV, index) => {
               const extrastyle = {
                 border: Colors.blackPrimary,
                 borderWidth: 3,
-                // borderOffset:1,
               };
-
               return (
                 <ColorVariant
                   color={colorV.color}
@@ -223,41 +215,14 @@ const SneakerDetailsScreen = ({ route, navigation }) => {
         </View>
       </View>
 
-      <View>
-        <View
-          style={{
-            paddingHorizontal: 4,
-          }}
-        >
-          <Text
-            style={{
-              fontSize: 18,
-              fontWeight: "600",
-              color: Colors.blackPrimary,
-              textDecorationStyle: "solid",
-              textDecorationLine: "underline",
-              textDecorationColor: Colors.blackPrimary,
-            }}
-          >
-            Details
-          </Text>
+      <View style={styles.detailsWrapper}>
+        <View style={styles.detailsWrapperContents}>
+          <Text style={styles.detailText}>Details</Text>
 
-          <Text
-            style={{
-              fontSize: 15,
-              fontWeight: "500",
-              color: "#212121",
-            }}
-          >
+          <Text style={styles.shortDescription}>
             {sneaker.short_description}
           </Text>
-          <Text
-            style={{
-              fontSize: 14,
-              fontWeight: "400",
-              color: "#8C8C8D",
-            }}
-          >
+          <Text style={styles.detailedDescription}>
             {sneaker.detailed_description}
           </Text>
         </View>
@@ -266,10 +231,8 @@ const SneakerDetailsScreen = ({ route, navigation }) => {
           return (
             <View
               style={{
-                padding: 4,
-                margin: 2,
+                ...styles.productDetailsItem,
                 backgroundColor: defaultBg,
-                width: WIDTH * 0.99,
               }}
               key={index}
             >
@@ -284,58 +247,16 @@ const SneakerDetailsScreen = ({ route, navigation }) => {
           );
         })}
 
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            zIndex: 6,
-            height: 0.1 * Dimensions.get("window").height,
-            padding: 8,
-          }}
-        >
+        <View style={styles.btnsWrapper}>
           <TouchableOpacity
-            style={{
-              width: 120,
-              height: 40,
-              backgroundColor: Colors.primaryWhiteDark,
-              padding: 6,
-              textAlign: "center",
-              justifyContent: "center",
-              alignItems: "center",
-              borderRadius: 20,
-              elevation: 4,
-            }}
+            style={styles.addToCartBtn}
+            onPress={handleAddToCart}
           >
-            <Text
-              style={{
-                color: Colors.blackPrimary,
-              }}
-            >
-              Add To Cart
-            </Text>
+            <Text style={styles.addToCartBtnText}>Add To Cart</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity
-            style={{
-              width: 120,
-              height: 40,
-              backgroundColor: Colors.secondary,
-              padding: 6,
-              textAlign: "center",
-              justifyContent: "center",
-              alignItems: "center",
-              borderRadius: 20,
-              elevation: 4,
-            }}
-          >
-            <Text
-              style={{
-                color: Colors.white,
-              }}
-            >
-              Buy Now
-            </Text>
+          <TouchableOpacity style={styles.buyNowBtn} onPress={handleBuyNow}>
+            <Text style={styles.buyNowBtnText}>Buy Now</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -345,8 +266,8 @@ const SneakerDetailsScreen = ({ route, navigation }) => {
 
 export const SneakerDetailsScreenOptions = ({ route, navigation }) => {
   //console.log(route.params , 'rppp')
-  const { sneakerDetailTitle,cartCount } = route.params;
-  console.log(cartCount,'count')
+  const { sneakerDetailTitle, cartCount } = route.params;
+  console.log(cartCount, "count");
   const handleBack = () => {
     navigation.navigate("Products");
   };
@@ -360,22 +281,9 @@ export const SneakerDetailsScreenOptions = ({ route, navigation }) => {
             iconName="bag"
             iconSize={24}
           ></Item>
-          <View
-            style={{
-              width: 18,
-              height: 18,
-              borderRadius: 30,
-              backgroundColor: Colors.secondary,
-              justifyContent: "center",
-              alignItems: "center",
-              ...StyleSheet.absoluteFillObject,
-              left: 25,
-              bottom: 36,
-              // top:36,
-            }}
-          >
-            <Text style={{ color: Colors.primaryWhite, fontSize: 12 }}>
-              {cartCount}
+          <View style={styles.customHeaderRightBtn}>
+            <Text style={styles.customHeaderRightBtnText}>
+              {cartCount || 0}
             </Text>
           </View>
         </HeaderButtons>
@@ -471,6 +379,95 @@ const styles = StyleSheet.create({
     fontStyle: "italic",
     fontWeight: "700",
     color: Colors.secondary,
+  },
+  addToCartBtn: {
+    width: 120,
+    height: 40,
+    backgroundColor: Colors.primaryWhiteDark,
+    padding: 6,
+    textAlign: "center",
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 20,
+    elevation: 4,
+  },
+  addToCartBtnText: {
+    color: Colors.blackPrimary,
+  },
+  buyNowBtn: {
+    width: 120,
+    height: 40,
+    backgroundColor: Colors.secondary,
+    padding: 6,
+    textAlign: "center",
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 20,
+    elevation: 4,
+  },
+  buyNowBtnText: {
+    color: Colors.white,
+  },
+  btnsWrapper: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    zIndex: 6,
+    height: 0.1 * Dimensions.get("window").height,
+    padding: 8,
+  },
+  productDetailsItem: {
+    padding: 4,
+    margin: 2,
+    width: WIDTH * 0.99,
+  },
+  customHeaderRightBtn: {
+    width: 18,
+    height: 18,
+    borderRadius: 30,
+    backgroundColor: Colors.secondary,
+    justifyContent: "center",
+    alignItems: "center",
+    ...StyleSheet.absoluteFillObject,
+    left: 25,
+    bottom: 36,
+    // top:36,
+  },
+  customHeaderRightBtnText: { color: Colors.primaryWhite, fontSize: 12 },
+  detailedDescription: {
+    fontSize: 14,
+    fontWeight: "400",
+    color: "#8C8C8D",
+  },
+  shortDescription: {
+    fontSize: 15,
+    fontWeight: "500",
+    color: "#212121",
+  },
+  detailText: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: Colors.blackPrimary,
+    textDecorationStyle: "solid",
+    textDecorationLine: "underline",
+    textDecorationColor: Colors.blackPrimary,
+  },
+  colorVariantWrapper: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    // justifyContent:'space-between',
+  },
+  colorWrapper: {
+    paddingHorizontal: 6,
+    paddingVertical: 4,
+  },
+  colorWrapperText: {
+    fontSize: 18,
+    fontWeight: "700",
+  },
+  detailsWrapper: {},
+  detailsWrapperContents: {
+    paddingHorizontal: 4,
   },
 });
 export default SneakerDetailsScreen;

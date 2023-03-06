@@ -77,13 +77,13 @@ const ProductItem = ({ item, navigation , count}) => {
   //   }
   // },[item])
 
-  const onPressed = () => {
+  const onPressed = useCallback(() => {
     navigation.navigate("Checkout", {
       sneakerId: id,
       sneakerDetailTitle:title,
-      cartCount:count
+      // cartCount:count
     });
-  };
+  },[count,title,id]);
 
   return (
     <TouchableOpacity style={styles.productItem} onPress={onPressed}>
@@ -125,7 +125,7 @@ const ProductItem = ({ item, navigation , count}) => {
 
 const styles = StyleSheet.create({
   productItem: {
-    elevation: 9,
+    elevation: 5,
     backgroundColor: Colors.white,
     width: 180,
     height: 240,
