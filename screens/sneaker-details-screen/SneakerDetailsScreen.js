@@ -118,17 +118,20 @@ const SneakerDetailsScreen = ({ route, navigation }) => {
     };
     dispatch(addToCart(cartItem));
   };
+
   const handleBuyNow = () => {
     const orderItem = {
       id: sneakerId,
       title: sneaker.title,
       price: sneaker.price,
+      imageUrl: variants[carouselPosition].url,
+      color: variants[carouselPosition].color,
     };
   };
 
   useEffect(() => {
     navigation.setParams({
-      cartCount:cartItemsCount,
+      cartCount: cartItemsCount,
     });
   }, [cartItemsCount]);
 
@@ -267,9 +270,13 @@ const SneakerDetailsScreen = ({ route, navigation }) => {
 export const SneakerDetailsScreenOptions = ({ route, navigation }) => {
   //console.log(route.params , 'rppp')
   const { sneakerDetailTitle, cartCount } = route.params;
-  console.log(cartCount, "count");
+  // console.log(cartCount, "count");
   const handleBack = () => {
     navigation.navigate("Products");
+  };
+
+  const handleCart = () => {
+    navigation.navigate("Cart");
   };
   return {
     headerTitle: sneakerDetailTitle,
@@ -280,12 +287,13 @@ export const SneakerDetailsScreenOptions = ({ route, navigation }) => {
             IconComponent={SimpleLineIcons}
             iconName="bag"
             iconSize={24}
+            onPress={handleCart}
           ></Item>
-          <View style={styles.customHeaderRightBtn}>
+          <Pressable style={styles.customHeaderRightBtn} onPress={handleCart}>
             <Text style={styles.customHeaderRightBtnText}>
               {cartCount || 0}
             </Text>
-          </View>
+          </Pressable>
         </HeaderButtons>
       );
     },

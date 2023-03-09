@@ -45,18 +45,18 @@ const ProfileScreen = ({ navigation }) => {
     );
   };
   const handleCart = () => {
-    // navigation.navigate("Cart");
-    Alert.alert(
-      "Feature not available yet",
-      "Please be patient with us feature coming soon ✨ or not 👀.",
-      [
-        {
-          text: "Okay",
-          style: "default",
-          onPress: null,
-        },
-      ]
-    );
+    navigation.navigate("Cart");
+    // Alert.alert(
+    //   "Feature not available yet",
+    //   "Please be patient with us feature coming soon ✨ or not 👀.",
+    //   [
+    //     {
+    //       text: "Okay",
+    //       style: "default",
+    //       onPress: null,
+    //     },
+    //   ]
+    // );
   };
   const handleNotification = () => {
     navigation.navigate("Notifications");
